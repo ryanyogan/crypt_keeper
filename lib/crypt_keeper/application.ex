@@ -8,14 +8,11 @@ defmodule CryptKeeper.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Telemetry supervisor
       CryptKeeperWeb.Telemetry,
-      # Start the PubSub system
       {Phoenix.PubSub, name: CryptKeeper.PubSub},
-      # Start the Endpoint (http/https)
+      {CryptKeeper.Historical, name: CryptKeeper.Historical},
+      {CryptKeeper.Exchanges.Supervisor, name: CryptKeeper.Exchanges.Supervisor},
       CryptKeeperWeb.Endpoint
-      # Start a worker by calling: CryptKeeper.Worker.start_link(arg)
-      # {CryptKeeper.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
