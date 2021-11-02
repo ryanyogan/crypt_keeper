@@ -1,6 +1,18 @@
 defmodule CryptKeeper.Exchanges do
   alias CryptKeeper.{Product, Trade}
 
+  @clients [
+    CryptKeeper.Exchanges.CoinbaseClient,
+    CryptKeeper.Exchanges.BitstampClient
+  ]
+
+  @available_products (for client <- @clients, pair <- client.available_currency_pairs() do
+                         Product.new(client.exchange_name(), pair)
+                       end)
+
+  def clients, do: @clients
+  def available_products, do: @available_products
+
   @spec subscribe(Product.t()) :: :ok | {:error, term()}
   def subscribe(product) do
     Phoenix.PubSub.subscribe(CryptKeeper.PubSub, topic(product))
