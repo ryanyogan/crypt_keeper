@@ -10,4 +10,5 @@ defmodule CryptKeeper do
   defdelegate unsubscribe_to_trades(product), to: CryptKeeper.Exchanges, as: :unsubscribe
   defdelegate get_last_trade(product), to: CryptKeeper.Historical
   defdelegate get_last_trades(products), to: CryptKeeper.Historical
+  defdelegate available_products(), to: CryptKeeper.Exchanges
 end
