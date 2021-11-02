@@ -17,7 +17,7 @@ defmodule CryptKeeperWeb.Router do
   scope "/", CryptKeeperWeb do
     pipe_through :browser
 
-    get "/", ProductController, :index
+    live "/", CryptoDashboardLive
   end
 
   if Mix.env() in [:dev, :test] do
