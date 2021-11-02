@@ -1,21 +1,17 @@
 defmodule CryptKeeper.Exchanges.CoinbaseClient do
   alias CryptKeeper.{Product, Trade}
   alias CryptKeeper.Exchanges.Client
-  import Client, only: [validate_required: 2]
 
-  @behaviour Client
+  require Client
 
-  @impl true
-  def exchange_name, do: "coinbase"
-
-  @impl true
-  def server_host, do: 'ws-feed.pro.coinbase.com'
-
-  @impl true
-  def server_port, do: 443
+  Client.defclient(
+    exchange_name: "coinbase",
+    host: 'ws-feed.pro.coinbase.com',
+    port: 443,
+    currency_pairs: ["BTC-USD", "ETH-USD", "LTC-USD"]
+  )
 
   @impl true
-  @spec handle_ws_message(map(), map()) :: tuple()
   def handle_ws_message(%{"type" => "ticker"} = msg, state) do
     msg
     |> message_to_trade()
