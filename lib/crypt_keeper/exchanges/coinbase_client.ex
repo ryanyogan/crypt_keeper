@@ -13,10 +13,8 @@ defmodule CryptKeeper.Exchanges.CoinbaseClient do
 
   @impl true
   def handle_ws_message(%{"type" => "ticker"} = msg, state) do
-    msg
-    |> message_to_trade()
-    |> IO.inspect(label: "ticker")
-
+    {:ok, trade} = message_to_trade(msg)
+    CryptKeeper.Exchanges.broadcast(trade)
     {:noreply, state}
   end
 

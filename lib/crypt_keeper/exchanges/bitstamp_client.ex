@@ -12,10 +12,8 @@ defmodule CryptKeeper.Exchanges.BitstampClient do
 
   @impl true
   def handle_ws_message(%{"event" => "trade"} = msg, state) do
-    msg
-    |> message_to_trade()
-    |> IO.inspect(label: "trade")
-
+    {:ok, trade} = message_to_trade(msg)
+    CryptKeeper.Exchanges.broadcast(trade)
     {:noreply, state}
   end
 
