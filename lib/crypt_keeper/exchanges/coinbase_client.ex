@@ -1,6 +1,10 @@
 defmodule CryptKeeper.Exchanges.CoinbaseClient do
   use GenServer
 
+  alias CryptKeeper.{Product, Trade}
+
+  @exchange_name "coinbase"
+
   @spec server_host :: charlist()
   def server_host, do: 'ws-feed.pro.coinbase.com'
 
@@ -53,13 +57,28 @@ defmodule CryptKeeper.Exchanges.CoinbaseClient do
 
   @spec handle_ws_message(map(), map()) :: tuple()
   def handle_ws_message(%{"type" => "ticker"} = msg, state) do
-    IO.inspect(msg, label: "ticker")
+    msg
+    |> message_to_trade()
+    |> IO.inspect(label: "ticker")
+
     {:noreply, state}
   end
 
   def handle_ws_message(msg, state) do
     IO.inspect(msg, label: "unhandled message")
     {:noreply, state}
+  end
+
+  @spec message_to_trade(map()) :: Trade.t()
+  def message_to_trade(msg) do
+    currency_pair = msg["product_id"]
+
+    Trade.new(
+      product: Product.new(@exchange_name, currency_pair),
+      price: msg["price"],
+      volume: msg["last_size"],
+      traded_at: datetime_from_string(msg["time"])
+    )
   end
 
   defp subscribe(state) do
@@ -78,5 +97,11 @@ defmodule CryptKeeper.Exchanges.CoinbaseClient do
       |> Jason.encode!()
 
     [{:text, msg}]
+  end
+
+  @spec datetime_from_string(String.t()) :: DateTime.t()
+  defp datetime_from_string(time_string) do
+    {:ok, dt, _} = DateTime.from_iso8601(time_string)
+    dt
   end
 end
