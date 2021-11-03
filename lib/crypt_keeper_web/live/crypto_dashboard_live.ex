@@ -17,13 +17,27 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
       Enum.each(products, &CryptKeeper.subscribe_to_trades/1)
     end
 
-    socket = assign(socket, trades: trades, products: products)
+    # socket = assign(socket, trades: trades, products: products)
+    socket = assign(socket, trades: %{}, products: [])
     {:ok, socket}
   end
 
   @impl true
   def render(assigns) do
     ~H"""
+    <form action="#" phx-submit="add-product">
+      <select name="product_id">
+        <option selected disabled>Add a Crypto Product</option>
+        <%= for product <- CryptKeeper.available_products() do %>
+          <option value={to_string(product)}>
+            <%= product.exchange_name %> - <%= product.currency_pair %>
+          </option>
+        <% end %>
+      </select>
+
+      <button type="submit" phx-disable-with="Loading...">Add product</button>
+    </form>
+
     <table>
       <thead>
         <th>Traded at</th>
@@ -55,5 +69,43 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
       end)
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("clear", _params, socket) do
+    {:noreply, assign(socket, :trades, %{})}
+  end
+
+  @impl true
+  def handle_event("add-product", %{"product_id" => product_id}, socket) do
+    [exchange_name, currency_pair] = String.split(product_id, ":")
+    product = Product.new(exchange_name, currency_pair)
+    socket = maybe_add_product(socket, product)
+    {:noreply, socket}
+  end
+
+  defp maybe_add_product(socket, product) do
+    if product not in socket.assigns.products do
+      socket
+      |> add_product(product)
+      |> put_flash(
+        :info,
+        "#{product.exchange_name} - #{product.currency_pair} added successfully"
+      )
+    else
+      socket
+      |> put_flash(:error, "The product was already added")
+    end
+  end
+
+  defp add_product(socket, product) do
+    CryptKeeper.subscribe_to_trades(product)
+
+    socket
+    |> update(:products, fn products -> [product | products] end)
+    |> update(:trades, fn trades ->
+      trade = CryptKeeper.get_last_trade(product)
+      Map.put(trades, product, trade)
+    end)
   end
 end
