@@ -1,6 +1,7 @@
 defmodule CryptKeeperWeb.CryptoDashboardLive do
   use CryptKeeperWeb, :live_view
   alias CryptKeeper.Product
+  import CryptKeeperWeb.ProductHelpers
 
   @impl true
   def mount(_params, _session, socket) do
@@ -22,44 +23,45 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
     {:ok, socket}
   end
 
-  @impl true
-  def render(assigns) do
-    ~H"""
-    <form action="#" phx-submit="add-product">
-      <select name="product_id">
-        <option selected disabled>Add a Crypto Product</option>
-        <%= for product <- CryptKeeper.available_products() do %>
-          <option value={to_string(product)}>
-            <%= product.exchange_name %> - <%= product.currency_pair %>
-          </option>
-        <% end %>
-      </select>
+  # @impl true
+  # def render(assigns) do
+  #   ~H"""
+  #   <form action="#" phx-submit="add-product">
+  #     <select name="product_id">
+  #       <option selected disabled>Add a Crypto Product</option>
+  #       <%= for product <- CryptKeeper.available_products() do %>
+  #         <option value={to_string(product)}>
+  #           <%= product.exchange_name %> - <%= product.currency_pair %>
+  #         </option>
+  #       <% end %>
+  #     </select>
 
-      <button type="submit" phx-disable-with="Loading...">Add product</button>
-    </form>
+  #     <button type="submit" phx-disable-with="Loading...">Add product</button>
+  #   </form>
 
-    <table>
-      <thead>
-        <th>Traded at</th>
-        <th>Exchange</th>
-        <th>Currency</th>
-        <th>Price</th>
-        <th>Volume</th>
-      </thead>
-      <tbody>
-      <%= for product <- @products, trade = @trades[product], not is_nil(trade) do%>
-        <tr>
-          <td><%= trade.traded_at %></td>
-          <td><%= trade.product.exchange_name %></td>
-          <td><%= trade.product.currency_pair %></td>
-          <td><%= trade.price %></td>
-          <td><%= trade.volume %></td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
-    """
-  end
+  #   <h1 class="text-red-500 text-5xl font-bold text-center">Tailwind CSS</h1>
+  #   <table>
+  #     <thead>
+  #       <th>Traded at</th>
+  #       <th>Exchange</th>
+  #       <th>Currency</th>
+  #       <th>Price</th>
+  #       <th>Volume</th>
+  #     </thead>
+  #     <tbody>
+  #     <%= for product <- @products, trade = @trades[product], not is_nil(trade) do%>
+  #       <tr>
+  #         <td><%= trade.traded_at %></td>
+  #         <td><%= trade.product.exchange_name %></td>
+  #         <td><%= trade.product.currency_pair %></td>
+  #         <td><%= trade.price %></td>
+  #         <td><%= trade.volume %></td>
+  #       </tr>
+  #     <% end %>
+  #     </tbody>
+  #   </table>
+  #   """
+  # end
 
   @impl true
   def handle_info({:new_trade, trade}, socket) do
@@ -107,5 +109,10 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
       trade = CryptKeeper.get_last_trade(product)
       Map.put(trades, product, trade)
     end)
+  end
+
+  defp grouped_products_by_exchange_name do
+    CryptKeeper.available_products()
+    |> Enum.group_by(& &1.exchange_name)
   end
 end
