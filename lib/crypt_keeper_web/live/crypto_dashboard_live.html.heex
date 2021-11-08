@@ -21,6 +21,6 @@
 
 <div class="product-components">
 	<%= for product <- @products do %>
-		<%= live_component CryptKeeperWeb.ProductComponent, id: product %>
+		<%= live_component CryptKeeperWeb.ProductComponent, id: product, timezone: @timezone %>
 	<% end %>
 </div>

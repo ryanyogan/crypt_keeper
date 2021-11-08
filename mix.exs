@@ -47,7 +47,8 @@ defmodule CryptKeeper.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:gun, "~> 1.3"},
-      {:cowlib, "~> 2.11.0", override: true}
+      {:cowlib, "~> 2.11.0", override: true},
+      {:tzdata, "~> 1.1"}
     ]
   end
 

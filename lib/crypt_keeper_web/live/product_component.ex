@@ -19,6 +19,7 @@ defmodule CryptKeeperWeb.ProductComponent do
 
     socket =
       assign(socket,
+        timezone: assigns.timezone,
         product: product,
         trade: CryptKeeper.get_last_trade(product)
       )
@@ -62,7 +63,7 @@ defmodule CryptKeeperWeb.ProductComponent do
       </div>
 
       <div class="trade-time">
-        <%= human_datetime(@trade.traded_at) %>
+        <%= human_datetime(@trade.traded_at, @timezone) %>
       </div>
     </div>
     """

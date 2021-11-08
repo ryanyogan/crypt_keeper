@@ -7,6 +7,8 @@
 # General application configuration
 import Config
 
+config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
 # Configures the endpoint
 config :crypt_keeper, CryptKeeperWeb.Endpoint,
   url: [host: "localhost"],
