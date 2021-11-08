@@ -34,6 +34,7 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
   def handle_event("remove-product", %{"product-id" => product_id}, socket) do
     product = product_from_string(product_id)
     socket = update(socket, :products, &List.delete(&1, product))
+    CryptKeeper.unsubscribe_to_trades(product)
     {:noreply, socket}
   end
 
