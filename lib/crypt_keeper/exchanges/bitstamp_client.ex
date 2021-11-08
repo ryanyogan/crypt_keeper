@@ -2,6 +2,7 @@ defmodule CryptKeeper.Exchanges.BitstampClient do
   alias CryptKeeper.{Product, Trade}
   alias CryptKeeper.Exchanges.Client
   require Client
+  require Logger
 
   Client.defclient(
     exchange_name: "bitstamp",
@@ -19,7 +20,7 @@ defmodule CryptKeeper.Exchanges.BitstampClient do
 
   @impl true
   def handle_ws_message(msg, state) do
-    IO.inspect(msg, label: "unhandled message")
+    Logger.warn("Unhandled Inbound Message: #{inspect(msg)}")
     {:noreply, state}
   end
 

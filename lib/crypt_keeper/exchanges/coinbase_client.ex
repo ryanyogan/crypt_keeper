@@ -3,12 +3,13 @@ defmodule CryptKeeper.Exchanges.CoinbaseClient do
   alias CryptKeeper.Exchanges.Client
 
   require Client
+  require Logger
 
   Client.defclient(
     exchange_name: "coinbase",
     host: 'ws-feed.pro.coinbase.com',
     port: 443,
-    currency_pairs: ["BTC-USD", "ETH-USD", "LTC-USD"]
+    currency_pairs: ["BTC-USD", "ETH-USD", "LTC-USD", "BTC-EUR", "ETH-EUR"]
   )
 
   @impl true
@@ -20,7 +21,7 @@ defmodule CryptKeeper.Exchanges.CoinbaseClient do
 
   @impl true
   def handle_ws_message(msg, state) do
-    IO.inspect(msg, label: "unhandled message")
+    Logger.warn("Unhandled Inbound Message: #{inspect(msg)}")
     {:noreply, state}
   end
 
