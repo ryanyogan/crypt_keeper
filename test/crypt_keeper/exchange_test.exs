@@ -12,6 +12,8 @@ defmodule CryptKeeper.EchangesTest do
       Product.new("coinbase", "BTC-USD"),
       Product.new("coinbase", "ETH-USD"),
       Product.new("coinbase", "LTC-USD"),
+      Product.new("coinbase", "BTC-EUR"),
+      Product.new("coinbase", "ETH-EUR"),
       Product.new("bitstamp", "btcusd"),
       Product.new("bitstamp", "ethusd"),
       Product.new("bitstamp", "ltcusd")
