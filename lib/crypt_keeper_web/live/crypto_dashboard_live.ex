@@ -47,7 +47,7 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
 
   @impl true
   def handle_params(_params, _uri, socket) do
-    {:noreply, socket}
+    {:noreply, socket |> assign(products: [])}
   end
 
   defp get_timezone_from_connection(socket) do
@@ -89,7 +89,7 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
     product_ids =
       socket.assigns.products
       |> Enum.map(&to_string/1)
-      |> Kernel.--([product_id])
+      |> List.delete(product_id)
       |> Enum.uniq()
 
     socket = push_patch(socket, to: Routes.live_path(socket, __MODULE__, products: product_ids))
@@ -113,6 +113,6 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
     CryptKeeper.unsubscribe_to_trades(product)
 
     socket
-    |> update(:products, &(&1 -- [product]))
+    |> update(:products, fn products -> List.delete(products, product) end)
   end
 end
