@@ -48,8 +48,7 @@ defmodule CryptKeeper.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:gun, "~> 1.3"},
       {:cowlib, "~> 2.11.0", override: true},
-      {:tzdata, "~> 1.1"},
-      {:dart_sass, "~> 0.3", runtime: Mix.env() == :dev}
+      {:tzdata, "~> 1.1"}
     ]
   end
 
