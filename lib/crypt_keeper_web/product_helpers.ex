@@ -27,6 +27,12 @@ defmodule CryptKeeperWeb.ProductHelpers do
     end
   end
 
+  def shorthand_name(product) do
+    name = String.slice(product.exchange_name, 0..2)
+    fiat_symbol = String.upcase(fiat_symbol(product))
+    fiat_symbol <> "@" <> String.upcase(name)
+  end
+
   def crypto_symbol(product),
     do: crypto_and_fiat_symbols(product).crypto_symbol
 

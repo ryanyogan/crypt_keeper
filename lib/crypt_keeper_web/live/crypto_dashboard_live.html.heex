@@ -1,4 +1,4 @@
-<div class="min-h-full">
+<div x-data="{open: false}" class="min-h-full">
   <nav class="bg-gray-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
@@ -14,7 +14,10 @@
         </div>
 
         <div class="-mr-2 flex md:hidden">
-          <button type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+          <button
+            @click="open = !open"
+            @click.away="open = false"
+           type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
             <span class="sr-only">Open main menu</span>
             <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -28,7 +31,14 @@
       </div>
     </div>
 
-    <div class="md:hidden" id="mobile-menu">
+    <div class="md:hidden" id="mobile-menu"
+    x-transition:enter="transition ease-out duration-100"
+            x-transition:enter-start="transform opacity-0 scale-95"
+            x-transition:enter-end="transform opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75"
+            x-transition:leave-start="transform opacity-100 scale-100"
+            x-transition:leave-end="transform opacity-0 scale-95"
+     x-cloak x-show="open">
       <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
         <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Dashboard</a>
       </div>
@@ -49,9 +59,8 @@
 
 
 <div class="m-5">
-
-<form class="mt-10" action="#" phx-submit="add-product">
-  <div>
+  <form class="mt-1" action="#" phx-submit="add-product">
+    <div>
       <div class="flex items-center justify-between">
         <h3 class="text-sm text-gray-900 font-medium">Cryptos</h3>
         <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Crypto guide</a>
@@ -62,117 +71,23 @@
           Choose a crypto
         </legend>
         <div class="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-          <!-- Active: "ring-2 ring-indigo-500" -->
-          <label class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-gray-50 text-gray-200 cursor-not-allowed">
-            <input type="radio" name="size-choice" value="XXS" disabled class="sr-only" aria-labelledby="size-choice-0-label">
-            <p id="size-choice-0-label">
-              DOGE
-            </p>
 
-            <div aria-hidden="true" class="absolute -inset-px rounded-md border-2 border-gray-200 pointer-events-none">
-              <svg class="absolute inset-0 w-full h-full text-gray-200 stroke-2" viewBox="0 0 100 100" preserveAspectRatio="none" stroke="currentColor">
-                <line x1="0" y1="100" x2="100" y2="0" vector-effect="non-scaling-stroke" />
-              </svg>
-            </div>
-          </label>
+          <%= for product <- CryptKeeper.available_products() do %>
+            <label class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
+              <input type="radio" name="product_id" value={to_string(product)} class="sr-only" aria-labelledby="size-choice-1-label">
+              <div id={to_string(product)} class="flex flex-col items-center">
+                <div class="w-8 h-8"><img class="w-8 h-8" src={crypto_icon(@socket, product)} /></div>
+                <span class="text-gray-800 font-bold text-xs mt-1"><%= shorthand_name(product) %></span>
+              </div>
 
-          <!-- Active: "ring-2 ring-indigo-500" -->
-          <label class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
-            <input type="radio" name="size-choice" value="XS" class="sr-only" aria-labelledby="size-choice-1-label">
-            <p id="size-choice-1-label">
-              BTC $
-            </p>
+              <!--
+                Active: "border", Not Active: "border-2"
+                Checked: "border-indigo-500", Not Checked: "border-transparent"
+              -->
+              <div class="absolute active:border checked:border-ingigo-500 -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
+            </label>
+          <% end %>
 
-            <!--
-              Active: "border", Not Active: "border-2"
-              Checked: "border-indigo-500", Not Checked: "border-transparent"
-            -->
-            <div class="absolute -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
-          </label>
-
-          <!-- Active: "ring-2 ring-indigo-500" -->
-          <label class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
-            <input type="radio" name="product_id" phx-value-product-id="coinbase:BTC-USD" value="coinbase:BTC-USD" class="sr-only" aria-labelledby="size-choice-2-label">
-            <p id="size-choice-2-label">
-              ETH $
-            </p>
-
-            <!--
-              Active: "border", Not Active: "border-2"
-              Checked: "border-indigo-500", Not Checked: "border-transparent"
-            -->
-            <div class="absolute -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
-          </label>
-
-          <!-- Active: "ring-2 ring-indigo-500" -->
-          <label class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
-            <input type="radio" name="size-choice" value="M" class="sr-only" aria-labelledby="size-choice-3-label">
-            <p id="size-choice-3-label">
-              LTC $
-            </p>
-
-            <!--
-              Active: "border", Not Active: "border-2"
-              Checked: "border-indigo-500", Not Checked: "border-transparent"
-            -->
-            <div class="absolute -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
-          </label>
-
-          <!-- Active: "ring-2 ring-indigo-500" -->
-          <label class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
-            <input type="radio" name="size-choice" value="L" class="sr-only" aria-labelledby="size-choice-4-label">
-            <p id="size-choice-4-label">
-              BTC €
-            </p>
-
-            <!--
-              Active: "border", Not Active: "border-2"
-              Checked: "border-indigo-500", Not Checked: "border-transparent"
-            -->
-            <div class="absolute -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
-          </label>
-
-          <!-- Active: "ring-2 ring-indigo-500" -->
-          <label class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
-            <input type="radio" name="size-choice" value="XL" class="sr-only" aria-labelledby="size-choice-5-label">
-            <p id="size-choice-5-label">
-              ETH €
-            </p>
-
-            <!--
-              Active: "border", Not Active: "border-2"
-              Checked: "border-indigo-500", Not Checked: "border-transparent"
-            -->
-            <div class="absolute -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
-          </label>
-
-          <!-- Active: "ring-2 ring-indigo-500" -->
-          <label class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
-            <input type="radio" name="size-choice" value="2XL" class="sr-only" aria-labelledby="size-choice-6-label">
-            <p id="size-choice-6-label">
-              LTC €
-            </p>
-
-            <!--
-              Active: "border", Not Active: "border-2"
-              Checked: "border-indigo-500", Not Checked: "border-transparent"
-            -->
-            <div class="absolute -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
-          </label>
-
-          <!-- Active: "ring-2 ring-indigo-500" -->
-          <label class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
-            <input type="radio" name="size-choice" value="3XL" class="sr-only" aria-labelledby="size-choice-7-label">
-            <p id="size-choice-7-label">
-              ...
-            </p>
-
-            <!--
-              Active: "border", Not Active: "border-2"
-              Checked: "border-indigo-500", Not Checked: "border-transparent"
-            -->
-            <div class="absolute -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
-          </label>
         </div>
       </fieldset>
     </div>

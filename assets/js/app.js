@@ -7,6 +7,8 @@ import Alpine from 'alpinejs';
 window.Alpine = Alpine;
 Alpine.start();
 
+console.log(window.Alpine);
+
 const csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute('content');
@@ -16,8 +18,8 @@ const liveSocket = new LiveSocket('/live', Socket, {
   params: { _csrf_token: csrfToken, timezone: timezone },
   dom: {
     onBeforeElUpdated(from, to) {
-      if (from.__x) {
-        window.Alpine.clone(from.__x, to);
+      if (from._x_dataStack) {
+        window.Alpine.clone(from, to);
       }
     },
   },
