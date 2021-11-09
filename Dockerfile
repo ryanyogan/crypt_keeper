@@ -40,7 +40,7 @@ COPY lib lib
 RUN mix assets.deploy
 
 # copy source here if not using TailwindCSS
-COPY lib lib
+# COPY lib lib
 
 # compile and build release
 COPY rel rel

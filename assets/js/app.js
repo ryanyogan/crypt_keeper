@@ -106,8 +106,8 @@ const liveSocket = new LiveSocket('/live', Socket, {
   params: { _csrf_token: csrfToken, timezone: timezone },
   dom: {
     onBeforeElUpdated(from, to) {
-      if (from._x_dataStack) {
-        window.Alpine.clone(from, to);
+      if (from.__x) {
+        window.Alpine.clone(from.__x, to);
       }
     },
   },
