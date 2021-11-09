@@ -2,6 +2,15 @@
   "devDependencies": {
     "autoprefixer": "^10.4.0",
     "postcss": "^8.3.11",
+    "postcss-cli": "^9.0.2",
+    "postcss-import": "^14.0.2",
     "tailwindcss": "^2.2.19"
+  },
+  "dependencies": {
+    "alpinejs": "^3.5.0",
+    "uplot": "1.6.5"
+  },
+  "scripts": {
+    "deploy": "NODE_ENV=production tailwindcss --postcss --minify --input=css/app.css --output=../priv/static/assets/app.css"
   }
 }

@@ -1,6 +1,6 @@
 // We import the CSS which is extracted to its own file by esbuild.
 // Remove this line if you add a your own CSS build pipeline (e.g postcss).
-import '../css/app.css';
+// import '../css/app.css';
 
 // If you want to use Phoenix channels, run `mix help phx.gen.channel`
 // to get started and then uncomment the line below.
@@ -25,14 +25,92 @@ import 'phoenix_html';
 import { Socket } from 'phoenix';
 import { LiveSocket } from 'phoenix_live_view';
 import topbar from '../vendor/topbar';
+// import { ChartHook } from './chart';
+import uPlot from 'uplot';
+import Alpine from 'alpinejs';
 
-let csrfToken = document
+window.Alpine = Alpine;
+Alpine.start();
+
+let plotOpts = {
+  width: 200,
+  height: 80,
+  class: 'chart-container',
+  cursor: { show: false },
+  select: { show: false },
+  legend: { show: false },
+  scales: {},
+  axes: [
+    {
+      show: false,
+    },
+    {
+      show: false,
+    },
+  ],
+  series: [
+    {},
+    {
+      size: 0,
+      width: 2,
+      stroke: 'white',
+      fill: 'rgb(45,85,150)',
+    },
+  ],
+};
+
+let ChartHook = {
+  mounted() {
+    let productId = this.el.dataset.productId;
+    let event = `new-trade:${productId}`;
+
+    this.trades = [];
+    this.plot = new uPlot(plotOpts, [[], []], this.el);
+    console.log(this.el);
+    this.handleEvent(event, (payload) => this.handleNewTrade(payload));
+  },
+  handleNewTrade(trade) {
+    let price = parseFloat(trade.price),
+      timestamp = trade.traded_at;
+
+    this.trades.push({
+      timestamp: timestamp,
+      price: price,
+    });
+
+    if (this.trades.length > 20) {
+      this.trades.splice(0, 1);
+    }
+
+    this.updateChart();
+  },
+
+  updateChart() {
+    let x = this.trades.map((t) => t.timestamp);
+    let y = this.trades.map((t) => t.price);
+    this.plot.setData([x, y]);
+  },
+};
+
+const Hooks = {
+  // Chart: ChartHook,
+};
+
+const csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute('content');
 
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const liveSocket = new LiveSocket('/live', Socket, {
+  hooks: Hooks,
   params: { _csrf_token: csrfToken, timezone: timezone },
+  dom: {
+    onBeforeElUpdated(from, to) {
+      if (from._x_dataStack) {
+        window.Alpine.clone(from, to);
+      }
+    },
+  },
 });
 
 // Show progress bar on live navigation and form submits
