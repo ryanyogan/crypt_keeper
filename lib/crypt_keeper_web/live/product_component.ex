@@ -37,7 +37,7 @@ defmodule CryptKeeperWeb.ProductComponent do
       <div class="px-4 py-5 sm:px-6 flex">
         <h3 class="text-lg leading-6 font-medium text-gray-900 flex items-center">
           <img class="mr-2" src={crypto_icon(@socket, @product)} />
-          <%= crypto_name(@product) %>
+          <%= live_redirect crypto_name(@product), to: Routes.live_path(@socket, CryptKeeperWeb.ProductLive, to_string(@product)) %>
         </h3>
       </div>
       <div class="border-t border-gray-200">

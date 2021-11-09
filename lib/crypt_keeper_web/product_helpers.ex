@@ -1,5 +1,10 @@
 defmodule CryptKeeperWeb.ProductHelpers do
   @moduledoc false
+  def product_from_string(product_id) do
+    [exchange_name, currency_pair] = String.split(product_id, ":")
+    CryptKeeper.Product.new(exchange_name, currency_pair)
+  end
+
   def crypto_icon(conn, product) do
     crypto_symbol = crypto_symbol(product)
     relative_path = Path.join("/images/cryptos", "#{crypto_symbol}.svg")

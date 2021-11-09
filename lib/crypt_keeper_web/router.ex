@@ -18,6 +18,7 @@ defmodule CryptKeeperWeb.Router do
     pipe_through :browser
 
     live "/", CryptoDashboardLive
+    live "/products/:id", ProductLive
   end
 
   if Mix.env() in [:dev, :test] do
