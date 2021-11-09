@@ -3,6 +3,7 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
   use CryptKeeperWeb, :live_view
   alias CryptKeeper.Product
   import CryptKeeperWeb.ProductHelpers
+  require Logger
 
   @impl true
   def mount(_params, _session, socket) do
@@ -23,12 +24,33 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
   end
 
   @impl true
+  def handle_params(%{"product_id" => product_id}, _uri, socket) do
+    product = product_from_string(product_id)
+
+    socket =
+      socket
+      |> assign(:selected_product, product)
+      |> maybe_update_title_with_trade(CryptKeeper.get_last_trade(product))
+
+    {:noreply, socket}
+  end
+
+  def handle_params(params, _uri, socket) do
+    Logger.debug("catch-all handle_params: #{inspect(params)}")
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info({:new_trade, trade}, socket) do
     send_update(
       CryptKeeperWeb.ProductComponent,
       id: trade.product,
       trade: trade
     )
+
+    socket =
+      socket
+      |> maybe_update_title_with_trade(trade)
 
     {:noreply, socket}
   end
@@ -59,6 +81,15 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
       |> add_product(product)
     end
   end
+
+  defp maybe_update_title_with_trade(
+         %{assigns: %{selected_product: product}} = socket,
+         %{product: product} = trade
+       ) do
+    assign(socket, :page_title, "#{trade.price} - #{product.currency_pair}")
+  end
+
+  defp maybe_update_title_with_trade(socket, _trade), do: socket
 
   defp product_from_string(product_id) do
     [exchange_name, currency_pair] = String.split(product_id, ":")
