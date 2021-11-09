@@ -1,6 +1,7 @@
 defmodule CryptKeeper.HistoricalTest do
+  @moduledoc false
   use ExUnit.Case, async: true
-  alias CryptKeeper.{Historical, Exchanges, Product, Trade}
+  alias CryptKeeper.{Exchanges, Historical, Product, Trade}
 
   setup :start_fresh_historical_with_all_products
   setup :start_fresh_historical_with_all_coinbase_products

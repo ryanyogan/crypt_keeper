@@ -1,6 +1,8 @@
 defmodule CryptKeeper.Exchanges.BitstampClient do
-  alias CryptKeeper.{Product, Trade}
+  @moduledoc false
   alias CryptKeeper.Exchanges.Client
+  alias CryptKeeper.{Product, Trade}
+
   require Client
   require Logger
 

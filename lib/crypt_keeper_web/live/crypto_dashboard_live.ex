@@ -1,4 +1,5 @@
 defmodule CryptKeeperWeb.CryptoDashboardLive do
+  @moduledoc false
   use CryptKeeperWeb, :live_view
   alias CryptKeeper.Product
   import CryptKeeperWeb.ProductHelpers
@@ -51,11 +52,11 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
   end
 
   defp maybe_add_product(socket, product) do
-    if product not in socket.assigns.products do
+    if product in socket.assigns.products do
       socket
-      |> add_product(product)
     else
       socket
+      |> add_product(product)
     end
   end
 

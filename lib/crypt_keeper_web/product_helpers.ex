@@ -1,14 +1,15 @@
 defmodule CryptKeeperWeb.ProductHelpers do
-  def human_datetime(datetime, timezone \\ "UTC") do
-    datetime
-    |> DateTime.shift_zone!(timezone)
-    |> Calendar.strftime("%b %d, %Y   %H:%M:%S")
-  end
-
+  @moduledoc false
   def crypto_icon(conn, product) do
     crypto_symbol = crypto_symbol(product)
     relative_path = Path.join("/images/cryptos", "#{crypto_symbol}.svg")
     CryptKeeperWeb.Router.Helpers.static_path(conn, relative_path)
+  end
+
+  def human_datetime(datetime, timezone \\ "UTC") do
+    datetime
+    |> DateTime.shift_zone!(timezone)
+    |> Calendar.strftime("%b %d, %Y   %H:%M:%S")
   end
 
   def crypto_name(product) do

@@ -1,4 +1,5 @@
 defmodule CryptKeeper.Exchanges.Client do
+  @moduledoc false
   use GenServer
 
   @type t() :: %__MODULE__{

@@ -1,6 +1,7 @@
 defmodule CryptKeeper.Historical do
+  @moduledoc false
   use GenServer
-  alias CryptKeeper.{Product, Trade, Exchanges}
+  alias CryptKeeper.{Exchanges, Product, Trade}
 
   @type t() :: %__MODULE__{
           products: [Product.t()],

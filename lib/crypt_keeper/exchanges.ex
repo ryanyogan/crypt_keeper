@@ -1,4 +1,5 @@
 defmodule CryptKeeper.Exchanges do
+  @moduledoc false
   alias CryptKeeper.{Product, Trade}
 
   @clients [

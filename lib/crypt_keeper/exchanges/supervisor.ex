@@ -1,4 +1,5 @@
 defmodule CryptKeeper.Exchanges.Supervisor do
+  @moduledoc false
   use Supervisor
   alias CryptKeeper.Exchanges
 

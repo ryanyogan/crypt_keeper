@@ -1,4 +1,5 @@
 defmodule CryptKeeper.EchangesTest do
+  @moduledoc false
   use ExUnit.Case, async: true
   alias CryptKeeper.{Exchanges, Product}
 

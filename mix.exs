@@ -33,6 +33,7 @@ defmodule CryptKeeper.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.6.0"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},

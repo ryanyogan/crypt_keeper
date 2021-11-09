@@ -1,4 +1,5 @@
 defmodule CryptKeeper.Trade do
+  @moduledoc false
   alias CryptKeeper.Product
 
   @type t() :: %__MODULE__{
