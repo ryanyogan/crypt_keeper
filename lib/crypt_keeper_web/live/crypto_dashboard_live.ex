@@ -71,9 +71,4 @@ defmodule CryptKeeperWeb.CryptoDashboardLive do
     socket
     |> update(:products, fn products -> [product | products] end)
   end
-
-  defp grouped_products_by_exchange_name do
-    CryptKeeper.available_products()
-    |> Enum.group_by(& &1.exchange_name)
-  end
 end

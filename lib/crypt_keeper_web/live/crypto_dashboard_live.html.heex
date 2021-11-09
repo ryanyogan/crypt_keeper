@@ -46,6 +46,44 @@
   </nav>
 
   <main>
+    <div class="m-5" x-data="{ checked: ''}">
+      <form class="mt-1" action="#" phx-submit="add-product">
+        <div>
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm text-gray-900 font-medium">Cryptos</h3>
+            <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Crypto guide</a>
+          </div>
+
+          <fieldset class="mt-4">
+            <legend class="sr-only">
+              Choose a crypto
+            </legend>
+            <div class="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
+
+              <%= for product <- CryptKeeper.available_products() do %>
+                <label :class={"[checked === '#{to_string(product)}' ? 'border-indigo-500' : 'border-transparent']"} class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
+                  <input @click={"checked = '#{to_string(product)}'"} type="radio" name="product_id" value={to_string(product)} class="sr-only" aria-labelledby="size-choice-1-label">
+                  <div id={to_string(product)} class="flex flex-col items-center">
+                    <div class="w-8 h-8"><img class="w-8 h-8" src={crypto_icon(@socket, product)} /></div>
+                    <span class="text-gray-800 font-bold text-xs mt-1"><%= shorthand_name(product) %></span>
+                  </div>
+
+                  <!--
+                    Active: "border", Not Active: "border-2"
+                    Checked: "border-indigo-500", Not Checked: "border-transparent"
+                  -->
+                  <div class="absolute active:border checked:border-ingigo-500 -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
+                </label>
+              <% end %>
+
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="mt-10 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add</button>
+      </form>
+    </div>
+
     <div class="max-w-7xl mx-auto py-6 px-0 sm:px-0 md:px-6 lg:px-8">
       <div class="product-components">
         <%= for product <- @products do %>
@@ -56,42 +94,3 @@
   </main>
 </div>
 
-
-
-<div class="m-5" x-data="{ checked: ''}">
-  <form class="mt-1" action="#" phx-submit="add-product">
-    <div>
-      <div class="flex items-center justify-between">
-        <h3 class="text-sm text-gray-900 font-medium">Cryptos</h3>
-        <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Crypto guide</a>
-      </div>
-
-      <fieldset class="mt-4">
-        <legend class="sr-only">
-          Choose a crypto
-        </legend>
-        <div class="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-
-          <%= for product <- CryptKeeper.available_products() do %>
-            <label :class={"[checked === '#{to_string(product)}' ? 'border-indigo-500' : 'border-transparent']"} class="group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6 bg-white shadow-sm text-gray-900 cursor-pointer">
-              <input @click={"checked = '#{to_string(product)}'"} type="radio" name="product_id" value={to_string(product)} class="sr-only" aria-labelledby="size-choice-1-label">
-              <div id={to_string(product)} class="flex flex-col items-center">
-                <div class="w-8 h-8"><img class="w-8 h-8" src={crypto_icon(@socket, product)} /></div>
-                <span class="text-gray-800 font-bold text-xs mt-1"><%= shorthand_name(product) %></span>
-              </div>
-
-              <!--
-                Active: "border", Not Active: "border-2"
-                Checked: "border-indigo-500", Not Checked: "border-transparent"
-              -->
-              <div class="absolute active:border checked:border-ingigo-500 -inset-px rounded-md pointer-events-none" aria-hidden="true"></div>
-            </label>
-          <% end %>
-
-        </div>
-      </fieldset>
-    </div>
-
-    <button type="submit" class="mt-10 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add</button>
-  </form>
-</div>
